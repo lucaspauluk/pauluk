@@ -1,8 +1,3 @@
-provider "google" {
-  project = "totemic-cursor-374417"
-  region = "us-west1"
-  zone = "us-west1-a"
-}
 
 resource "google_compute_address" "static" {
   name = "ipv4-address"
