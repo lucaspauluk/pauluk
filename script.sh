@@ -17,6 +17,17 @@ sudo apt install docker-ce -y
 sudo usermod -aG docker ${USER}
 
 sudo mkdir -p /docker/mysql/wordpress/data
+sudo mkdir -p /docker/wordpress/var/www/html
+
+touch /etc/init.d/docker_init_wp.sh
+chmod a+x /etc/init.d/docker_init_wp.sh
+
+cat > /etc/init.d/docker_init_wp.sh << EOT
+sudo docker start mysql-wordpress &
+sudo docker start wordpress &
+EOT
+
+meuip=$(hostname -I | awk '{print $1}')
 
 sudo docker pull mysql
 sudo docker pull wordpress
@@ -32,10 +43,11 @@ mysql:5.7
 
 docker run -d --name wordpress \
  -p 80:80 \
- -e WORDPRESS_DB_HOST="10.0.1.2" \
+ -v /docker/wordpress/var/www/html:/var/www/html \
+ -e WORDPRESS_DB_HOST=$meuip \
  -e WORDPRESS_DB_USER="wordpress" \
  -e WORDPRESS_DB_PASSWORD="wordpress" \
  -e WORDPRESS_DB_NAME="wordpress" \
- wordpress
+wordpress
 
 
